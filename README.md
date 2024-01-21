@@ -1,9 +1,7 @@
-
 Let's break down the code and understand how each part works:
 
 server.js
 Dependencies and Setup:
-
 express, mongoose, and cors are imported.
 An instance of express is created, and a model (Contact) is imported from the ContactModel.js file.
 Middleware:
