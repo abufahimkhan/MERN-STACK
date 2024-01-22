@@ -13,25 +13,28 @@ export default function Phonebook() {
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
   const [phone, setPhone] = useState('');
+
+
   useEffect(() => {
-    axios.get('http://localhost:3001/getData')
-      .then(response => setEntries(response.data))
-      .catch(error => console.log(error));
+    fetchContacts();
   }, []);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/getData');
+      setEntries(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   const handleSubmit = async(event) => {
     event.preventDefault();
     if(firstname=='' || lastname=='' || phone==''){
       alert('Field missing!');
       return;
     }
-    // //fetching and showing data by table
-    // axios.get('http://localhost:5173/getData')
-    // .then(Response=>setEntries(Response.data))
-    // .catch(error=>console.log("error"))
-    // const stateValue = { firstname, lastname, phone };
-    // setEntries([...entries, stateValue]);
-    
-     //saving data in MongoDB
     try{
       await axios.post('http://localhost:3001/saveContact',{
         firstname,
@@ -40,8 +43,8 @@ export default function Phonebook() {
       })
 
       //now fetching data from MongoDB
-      const response=await axios.get('http://localhost:3001/getData');
-      setEntries(response.data);
+      fetchContacts();
+      
       setFirstName('');
       setLastName('');
       setPhone('');
@@ -49,7 +52,23 @@ export default function Phonebook() {
     }catch(err){
       console.log("Error saving contact", err);
     }
+  };
+
+  const handleUpdate = (contactId) => {
   
+  };
+  const handleEdit=()=>{}
+  const handleDelete = async (contactId) => {
+    // Implement the logic to delete a contact
+    // You will need to make a DELETE request to the server
+    // Update the URL accordingly
+    try {
+      await axios.delete(`http://localhost:3001/deleteContact/${contactId}`);
+
+      fetchContacts();  // Fetch updated data after deleting contact
+    } catch (err) {
+      console.log("Error deleting contact", err);
+    }
   };
  
  
@@ -102,6 +121,11 @@ export default function Phonebook() {
                   <td>{info.firstname}</td>
                   <td>{info.lastname}</td>
                   <td>{info.phone}</td>
+                  <td style={{display:'flex',gap:"10px"}}>
+                    <button style={{backgroundColor:'GrayText'}} onClick={() => handleEdit(info._id)}>Edit</button>
+                    <button style={{backgroundColor:'green'}} onClick={() => handleUpdate(info._id)}>Update</button>
+                    <button style={{backgroundColor:'red'}} onClick={() => handleDelete(info._id)}>Delete</button>
+                  </td>
                 </tr>
               ))}
             </tbody>

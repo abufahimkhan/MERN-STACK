@@ -1,5 +1,6 @@
 .container {
-    max-width: 1000px; /* Adjust the max-width according to your preference */
+    max-width: 1000px; 
+    background-color: dimgrey;
     margin: 50px auto;
     padding: 20px;
     border: 1px solid #ccc;

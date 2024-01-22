@@ -40,6 +40,48 @@ app.post('/saveContact', async (request, response) => {
     }
 });
 
+//update data
+app.put('/updateContact/:id',async(request,response)=>{
+    const contactId=request.params.id;
+    const {firstname,lastname,phone}=request.body;
+    try{
+        const updatedContact=await Contact.findByIdAndUpdate(
+            contactId,
+            {firstname,lastname,phone},
+            {new:true}
+        );
+        if(!updatedContact){
+            return response.status(404).json({error:'Contact not found'})
+        }
+
+
+        response.json(updatedContact);
+
+    }catch(error){
+        console.log('Error updating contact in MonoDB',error);
+        response.status(500).json({error:'Internal Server Error'});
+    }
+})
+
+// Delete contact by ID
+app.delete('/deleteContact/:id', async (request, response) => {
+    const contactId = request.params.id;
+
+    try {
+        const deletedContact = await Contact.findByIdAndDelete(contactId);
+
+        if (!deletedContact) {
+            return response.status(404).json({ error: 'Contact not found' });
+        }
+
+        response.json({ message: 'Contact deleted successfully' });
+    } catch (error) {
+        console.log('Error deleting contact in MongoDB', error);
+        response.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 
 app.listen(3001,(index)=>{
     console.log("server is running on port");
